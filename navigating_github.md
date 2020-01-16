@@ -6,3 +6,5 @@ https://github.com/Jenkins16
 
 My Class Page
 https://github.com/USF-Psych-DataSci
+
+Adding some text from the computer
