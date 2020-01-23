@@ -1,6 +1,6 @@
 Here is _the_URL to the **Datasci** repo:
 
-[DataSci Home] (https://github.com/USF-Psych-DataSci/DataSci-home)
+[DataSci Home](https://github.com/USF-Psych-DataSci/DataSci-home)
 
 My Participation Repository:
 https://github.com/Jenkins16/DataSci-participation/
