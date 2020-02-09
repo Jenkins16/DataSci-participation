@@ -230,8 +230,8 @@ Let's do some practice with grouping (and ungrouping) and summarizing data frame
 
 ```{r}
 gapminder %>% 
-  group_by(FILL_THIS_IN) %>% 
-  FILL_THIS_IN(min_life = min(lifeExp))
+  group_by(continent, year, country) %>% 
+  summarize(min_life = min(lifeExp))
 ```
 
 
@@ -240,18 +240,52 @@ in the `psych::bfi` dataset. Be sure to handle `NA`!
 
 ```{r}
 psych::bfi %>%
-  as_tibble() %>% 
+  as_tibble(psych::bfi) %>% 
   select(A1:A5) %>% 
   rowwise() %>% 
   mutate(A_mean = mean(c(A1, A2, A3, A4, A5), na.rm = TRUE)) %>% 
-  ungroup()
+  ungroup(`NA`)
 ```
 
 Now compute mean scores for the other Big Five traits, as well as 
 `sd` and `min` scores for reach person.
 
 ```{r}
-
+psych::bfi %>%
+  as_tibble(psych::bfi) %>% 
+  select(A1:A5) %>% 
+  rowwise() %>% 
+  mutate(A_mean = mean(c(A1, A2, A3, A4, A5), na.rm = TRUE)) %>% 
+  mutate(mu = min(c(A1, A2, A3, A4, A5), na.rm = TRUE)) %>%
+  mutate(sigma= sd(c(A1, A2, A3, A4, A5), na.rm = TRUE))
+psych::bfi %>%
+  as_tibble(psych::bfi) %>% 
+  select(C1:C5) %>% 
+  rowwise() %>% 
+  mutate(C_mean = mean(c(C1, C2, C3, C4, C5), na.rm = TRUE)) %>% 
+  mutate(mu= min(c(C1, C2, C3, C4, C5), na.rm = TRUE)) %>%
+  mutate(sigma= sd(c(C1, C2, C3, C4, C5), na.rm = TRUE))
+psych::bfi %>%
+  as_tibble(psych::bfi) %>% 
+  select(E1:E5) %>% 
+  rowwise() %>% 
+  mutate(E_mean = mean(c(E1, E2, E3, E4, E5), na.rm = TRUE)) %>% 
+  mutate(mu = min(c(E1, E2, E3, E4, E5), na.rm = TRUE)) %>%
+  mutate(sigma= sd(c(E1, E2, E3, E4, E5), na.rm = TRUE))
+psych::bfi %>%
+  as_tibble(psych::bfi) %>% 
+  select(N1:N5) %>% 
+  rowwise() %>% 
+  mutate(N_mean = mean(c(N1, N2, N3, N4, N5), na.rm = TRUE)) %>% 
+  mutate(mu = min(c(N1, N2, N3, N4, N5), na.rm = TRUE)) %>%
+  mutate(sigma= sd(c(N1, N2, N3, N4, N5), na.rm = TRUE))
+psych::bfi %>%
+  as_tibble(psych::bfi) %>% 
+  select(O1:O5) %>% 
+  rowwise() %>% 
+  mutate(O_mean = mean(c(O1, O2, O3, O4, O5), na.rm = TRUE)) %>% 
+  mutate(mu = min(c(O1, O2, O3, O4, O5), na.rm = TRUE)) %>%
+  mutate(sigma= sd(c(O1, O2, O3, O4, O5), na.rm = TRUE))
 ```
 
 ** There are a few other ways to do this sort of computation.**
@@ -283,15 +317,19 @@ _for each country_ by rearranging the following lines, and filling in the
 `FILL_THIS_IN`. Here's another convenience function for you: `dplyr::first()`. 
 
 ```
-mutate(rel_growth = FILL_THIS_IN) %>% 
-arrange(FILL_THIS_IN) %>% 
-gapminder %>% 
-knitr::kable()
-group_by(country) %>% 
+
+ 
+
+
+
 ```
 
 ```{r}
-
+gapminder %>%
+  arrange(year) %>%
+  group_by(country) %>%
+  mutate(rel_growth = pop) %>%
+  knitr::kable()
 ```
 
 
@@ -302,20 +340,26 @@ compute changes in a variable across rows of data (e.g., for time-series data)
 is `tsibble::difference()`:
 
 ```
-drop_na() %>% 
-ungroup() %>% 
-arrange(year) %>% 
-filter(inc_life_exp == min(inc_life_exp)) %>% 
-gapminder %>% 
-mutate(inc_life_exp = FILL_THIS_IN) %>% # Compute the changes in life expectancy
-arrange(inc_life_exp) %>% 
-group_by(country) %>% 
-group_by(continent) %>% 
-knitr::kable()
+
+
+
+
+
+
+
 ```
 
 ```{r}
-
+gapminder %>%
+  mutate(inc_life_exp = tsibble::difference(lifeExp)) %>% # Compute the changes in life expectancy
+  filter(inc_life_exp == min(inc_life_exp)) %>% 
+  arrange(year) %>%
+  arrange(inc_life_exp) %>%
+  drop_na(country) %>%
+  group_by(country) %>%
+  group_by(continent) %>%
+  ungroup() %>%
+  knitr::kable()
 ```
 
 
@@ -327,6 +371,12 @@ I'll give you a minute for each, then we'll go over the answer.
 1. In `gapminder`, take all countries in Europe that have a GDP per capita 
    greater than 10000, and select all variables except `gdpPercap`. 
    (Hint: use `-`).
+   
+```{r}
+  gapminder %>%
+   filter(country== "Europe"),  gdpPercap > 10000)
+```
+
 
 2. Take the first three columns of `gapminder` and extract the names.
 
